@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Translatify</title>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div class="container" style="margin-top: 40px; font-size: 30px;">
+    <div class="translatify">你好，我是布莱恩。你叫什么名字？</div>
+  </div>
+
+  <script>
+  function translatify(dictionaries) {
+
+    function initTooltip(dictionaries, text) {
+      var wordTranslations = [];
+
+      if (!Array.isArray(dictionaries)) {
+        dictionaries = [dictionaries];
+      }
+
+      for (var start = 0; start < text.length; start++) {
+        for (var wordLength = Math.min(10, text.length - start); wordLength >= 1; wordLength--) {
+          var word = text.slice(start, start + wordLength);
+
+          // Cycle through dictionaries and get the first translation.
+          var translation;
+          for (var i = 0; i < dictionaries.length; i++) {
+            var dictionary = dictionaries[i];
+            translation = dictionary[word];
+            if (translation) {
+              break;
+            }
+          }
+
+          // If there's a translation, wrap it in a tooltip span tag and go to the next word.
+          if (translation) {
+            var wordTranslation =
+              $('<span class="translatified-span" data-toggle="tooltip" title="' + word + ' [' +
+                  translation.pronunciation + '] ' +
+                  translation.translation +
+                '">' + word + '</span>');
+            wordTranslations.push(wordTranslation);
+            start += wordLength - 1; // Skip over the translated word.
+            break;
+          }
+        }
+      }
+
+      return wordTranslations;
+    }
+
+    $('.translatify').each(function(index, element) {
+      var $element = $(element);
+      el = $(element);
+      var tooltippedArray = initTooltip(dictionaries, $element.text());
+      $element.html('');
+      tooltippedArray.forEach(function($tooltippedElement) {
+        $element
+          .append($tooltippedElement.tooltip()
+            .on('mouseover', function() {
+              $(this).css({'background': 'cyan'});
+            }).on('mouseout', function() {
+              $(this).css({'background': 'white'});
+            }).on('click', function() {
+              $(this).css({'background': '#004dff'});
+              
+            })
+          );
+      });
+    });
+  }
+  </script>
+  <script>
+    var chineseDictionary = {
+      '你好': {pronunciation: 'ni3 hao3', translation: 'hello'},
+      '你': {pronunciation: 'ni3', translation: 'you'},
+      '我': {pronunciation: 'wo3', translation: 'me, I'},
+      '是': {pronunciation: 'shi4', translation: 'is, be'},
+      '布莱恩': {pronunciation: 'bu4 lai2 en1', translation: 'Brian, Bryan'},
+      '叫': {pronunciation: 'jiao4', translation: 'called'},
+      '什么': {pronunciation: 'shen2 me0', translation: 'what'},
+      '名字': {pronunciation: 'ming2 zi4', translation: 'name'}
+    };
+
+    translatify([chineseDictionary]);
+  </script>
+</body>
+</html>
