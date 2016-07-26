@@ -7,7 +7,15 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-  <style>
+</head>
+<body>
+  <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3" style="margin-top: 40px; font-size: 30px;">
+    <div class="translatify">你好，我是布莱恩。你叫什么名字？</div>
+  </div>
+
+  <script>
+  // Add the styling dynamically so that the user can import just a single script tag.
+  $(`<style>
     .translatify-mouseout {
       background-color: white;
     }
@@ -17,14 +25,8 @@
     .translatify-click {
       background-color: #004dff;
     }
-  </style>
-</head>
-<body>
-  <div class="col-sm-6 col-sm-offset-3" style="margin-top: 40px; font-size: 30px;">
-    <div class="translatify">你好，我是布莱恩。你叫什么名字？</div>
-  </div>
+  </style>`).appendTo($('head'));
 
-  <script>
   function translatify(dictionaries) {
 
     function initTooltip(dictionaries, text) {
