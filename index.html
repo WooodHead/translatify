@@ -7,9 +7,20 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <style>
+    .translatify-mouseout {
+      background-color: white;
+    }
+    .translatify-mouseover {
+      background-color: cyan;
+    }
+    .translatify-click {
+      background-color: #004dff;
+    }
+  </style>
 </head>
 <body>
-  <div class="container" style="margin-top: 40px; font-size: 30px;">
+  <div class="col-sm-6 col-sm-offset-3" style="margin-top: 40px; font-size: 30px;">
     <div class="translatify">你好，我是布莱恩。你叫什么名字？</div>
   </div>
 
@@ -54,6 +65,20 @@
       return wordTranslations;
     }
 
+
+
+    function clearClasses($element) {
+      // I probably shouldn't hardcode these...
+      return $element
+        .removeClass('translatify-mouseout')
+        .removeClass('translatify-mouseover')
+        .removeClass('translatify-click');
+    }
+
+    function setClass($element, addedClass) {
+      return clearClasses($element).addClass(addedClass);
+    }
+
     $('.translatify').each(function(index, element) {
       var $element = $(element);
       el = $(element);
@@ -63,12 +88,11 @@
         $element
           .append($tooltippedElement.tooltip()
             .on('mouseover', function() {
-              $(this).css({'background': 'cyan'});
+              setClass($(this), 'translatify-mouseover');
             }).on('mouseout', function() {
-              $(this).css({'background': 'white'});
+              setClass($(this), 'translatify-mouseout');
             }).on('click', function() {
-              $(this).css({'background': '#004dff'});
-              
+              setClass($(this), 'translatify-click');
             })
           );
       });
@@ -91,3 +115,4 @@
   </script>
 </body>
 </html>
+
