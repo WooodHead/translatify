@@ -7,7 +7,7 @@ var $wordList = $('#word-list');
 function styleWord(word) {
   return $('<tr><td>' + word.text + '</td><td>' + 
     word.pronunciation + '</td><td>' +
-    word.translation + '</td></tr>');
+    word.translation + '</td><td class="remove-button"><button>&times;</button></td></tr>');
 }
 
 function formatText(text) {
@@ -29,7 +29,7 @@ function addWord(text) {
   })
   .fail(function(err) {
     console.log(err);
-  })
+  });
 }
 
 function init() {
@@ -41,13 +41,28 @@ function init() {
     addWord($(this).text());
   });
 
+  $('#word-table').on('click', '.remove-button', function() {
+    console.log('removing...')
+    var $tr = $($(this).closest('tr'));
+    var index = $tr.index();
+    $.ajax({
+      method: 'delete',
+      url: '/api/user/' + state.userId + '/words/' + index,
+      success: function() {
+        $tr.remove();
+      },
+      error: function(err) {
+        console.log(err);
+      }
+    });
+  });
+
   $.get('/api/user')
   .done(function(users) {
     if (users.length > 0) {
       state.userId = users[0]._id;
       $.get('/api/user/' + state.userId + '/words')
       .done(function(words) {
-        console.log('appending words from server');
         if (words.length > 0) {
           $wordTable.show();
           words.forEach(function(word) {

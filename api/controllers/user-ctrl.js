@@ -12,6 +12,7 @@ module.exports = {
   getWords,
   saveWord,
   deleteAllWords,
+  deleteWordByIndex,
 };
 
 function sendJSON(res, status, json) {
@@ -170,7 +171,7 @@ function saveWord(req, res) {
   if (!req.body.word) {
     sendJSON(res, 404, {message: 'Send a word in the request body.'});
   } else {
-    withUser(req, res, function(user) {
+    withUser(req, res, (user) => {
       user.words.push(req.body.word);
       user.save((err, user) => {
         if (err) {
@@ -194,4 +195,22 @@ function deleteAllWords(req, res) {
       }
     });
   });
+}
+
+function deleteWordByIndex(req, res) {
+  var index = Number(req.params.index);
+  if (isNaN(index)) {
+    sendJSON(res, 400, {message: 'Send the index of the word you want to delete in the URL.'});
+  } else {
+    withUser(req, res, (user) => {
+      user.words.splice(index, 1);
+      user.save((err, user) => {
+        if (err) {
+          sendJSON(res, 404, err);
+        } else {
+          sendJSON(res, 204, null);
+        }
+      });
+    });
+  }
 }
