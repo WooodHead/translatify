@@ -7,7 +7,11 @@ module.exports = {
   getUser,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+
+  getWords,
+  saveWord,
+  deleteAllWords,
 };
 
 function sendJSON(res, status, json) {
@@ -136,4 +140,58 @@ function deleteUser(req, res) {
       }
     });
   }
+}
+
+function withUser(req, res, callback) {
+  if (!req.params.id) {
+    sendJSON(res, 404, {message: 'Provide user ID in URL.'});
+  } else {
+    User
+    .findById(req.params.id)
+    .exec((err, user) => {
+      if (err) {
+        sendJSON(res, 404, err);
+      } else if (!user) {
+        sendJSON(res, 404, {message: 'No user with that ID.'});
+      } else {
+        callback(user);
+      }
+    });
+  }
+}
+
+function getWords(req, res) {
+  withUser(req, res, (user) => {
+    sendJSON(res, 200, user.words);
+  });
+}
+
+function saveWord(req, res) {
+  if (!req.body.word) {
+    sendJSON(res, 404, {message: 'Send a word in the request body.'});
+  } else {
+    withUser(req, res, function(user) {
+      user.words.push(req.body.word);
+      user.save((err, user) => {
+        if (err) {
+          sendJSON(res, 404, err);
+        } else {
+          sendJSON(res, 201, user.words);
+        }
+      });
+    });
+  }
+}
+
+function deleteAllWords(req, res) {
+  withUser(req, res, (user) => {
+    user.words = [];
+    user.save((err, words) => {
+      if (err) {
+        sendJSON(res, 404, err);
+      } else {
+        sendJSON(res, 204, null);
+      }
+    });
+  });
 }
